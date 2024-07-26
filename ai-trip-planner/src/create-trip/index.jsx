@@ -8,17 +8,32 @@ import {
 } from "@/components/Constants/Option";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { chatSession } from "@/service/AiModel";
 
-function Createtrip() {
+const getAIPrompt = (formData) => `
+  Generate Travel plan for Location: ${formData.location},
+  for ${formData.numberOfDays} days for ${formData.traveler} with a ${formData.budget} budget.
+  Provide hotel options with name, address, price, image URL, geo coordinates, and rating.
+  Suggest an itinerary with placeName, placeDetails, placeImageUrl, geoCoordinates, ticketPricing, rating, and timeToTravel.
+  Include a daily plan for ${formData.numberOfDays} days with the best time to visit in JSON format.
+`;
+
+function CreateTrip() {
   const [place, setPlace] = useState("");
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    location: "",
+    numberOfDays: "",
+    budget: "",
+    traveler: "",
+  });
 
   const handleInputChange = (name, value) => {
-    setFormData({
-      ...formData,
+    setFormData((prevData) => ({
+      ...prevData,
       [name]: value,
-    });
+    }));
   };
+
   const handleSelect = (suggestion) => {
     setPlace(suggestion.formatted);
     handleInputChange("location", suggestion.formatted);
@@ -28,28 +43,35 @@ function Createtrip() {
     console.log(formData);
   }, [formData]);
 
-  const OnGenerateTrip = () => {
+  const OnGenerateTrip = async () => {
     if (
-      (formData?.days > 9 && !formData?.location) ||
-      !formData?.budget ||
-      !formData?.travelPreference ||
-      !formData?.days
+      !formData.location ||
+      !formData.numberOfDays ||
+      !formData.budget ||
+      !formData.traveler
     ) {
-      toast("Please fill all details.");
-
-      return;
+      toast("Please input data in all fields");
+    } else {
+      const AI_PROMPT = getAIPrompt(formData);
+      try {
+        console.log(AI_PROMPT);
+        const result = await chatSession.sendMessage(AI_PROMPT);
+        console.log(result.response.text());
+      } catch (error) {
+        console.error("Error generating trip:", error);
+        toast("Failed to generate trip. Please try again.");
+      }
     }
   };
-  console.log(formData);
+
   return (
     <div className="flex flex-col items-center sm:px-10 md:px-32 lg:px-56 xl:px-10 px-5 mt-10">
-      <h2 className="font-bold text-4xl">Tell us your travel preferences</h2>
+      <h2 className="font-bold text-3xl">Tell us your travel preferences</h2>
       <p className="mt-3 text-gray-500 text-xl">
         Just provide some basic information, and our trip planner will generate
         a customized itinerary based on your preferences.
       </p>
 
-      {/* form */}
       <div className="mt-20 flex flex-col gap-10">
         <div>
           <h2 className="text-xl my-3 font-medium">
@@ -75,8 +97,8 @@ function Createtrip() {
           <input
             placeholder="Ex.3"
             type="number"
-            className="p-2 w-full border border-gray-300 rounded"
-            onChange={(e) => handleInputChange("days", e.target.value)}
+            className="p-2 w-1/2 border border-gray-300 rounded"
+            onChange={(e) => handleInputChange("numberOfDays", e.target.value)}
           />
         </div>
 
@@ -88,11 +110,11 @@ function Createtrip() {
                 key={index}
                 onClick={() => handleInputChange("budget", item.title)}
                 className={`p-4 border cursor-pointer rounded-lg hover:shadow-lg 
-                    ${
-                      formData?.budget === item.title
-                        ? "border-2 border-black shadow-lg"
-                        : "border-gray-300"
-                    }`}
+                                    ${
+                                      formData.budget === item.title
+                                        ? "border-2 border-black shadow-lg"
+                                        : "border-gray-300"
+                                    }`}
               >
                 <h2 className="text-4xl">{item.icon}</h2>
                 <h2 className="font-bold text-lg">{item.title}</h2>
@@ -104,19 +126,16 @@ function Createtrip() {
 
         <div>
           <h2 className="text-xl my-3 font-medium">
-            The budget is exclusively allocated for activities and dining
-            purposes.
+            Who do you plan on traveling with on your next adventure?
           </h2>
           <div className="grid grid-cols-3 gap-5 mt-5 text-center">
             {SelectTravelsList.map((item, index) => (
               <div
                 key={index}
-                onClick={() =>
-                  handleInputChange("travelPreference", item.title)
-                }
+                onClick={() => handleInputChange("traveler", item.people)}
                 className={`p-4 border cursor-pointer rounded-lg hover:shadow-lg 
                                     ${
-                                      formData?.travelPreference === item.title
+                                      formData.traveler === item.people
                                         ? "border-2 shadow-lg border-black"
                                         : ""
                                     }`}
@@ -127,14 +146,13 @@ function Createtrip() {
               </div>
             ))}
           </div>
-
-          <div className="my-10 justify-end flex">
-            <Button onClick={OnGenerateTrip}>Generate Trip</Button>
-          </div>
         </div>
+      </div>
+      <div className="my-10 justify-end flex">
+        <Button onClick={OnGenerateTrip}>Generate Trip</Button>
       </div>
     </div>
   );
 }
 
-export default Createtrip;
+export default CreateTrip;
