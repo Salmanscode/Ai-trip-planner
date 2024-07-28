@@ -19,6 +19,8 @@ import { FcGoogle } from "react-icons/fc";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "@/service/firebaseConfig";
 
 const getAIPrompt = (formData) => `
   Generate Travel plan for Location: ${formData.location},
@@ -82,13 +84,40 @@ function CreateTrip() {
     try {
       const result = await chatSession.sendMessage(AI_PROMPT);
       console.log(result.response.text());
-      // saveAiTrip(result.response.text());
+      saveAiTrip(result.response.text());
     } catch (error) {
       console.error("Error generating trip:", error);
       toast("Failed to generate trip. Please try again.");
     }
     setIsLoading(false);
     setOpenDialog(false);
+  };
+
+  // saving data into the firebase
+  const saveAiTrip = async (TripData) => {
+    setIsLoading(true);
+    const user = JSON.parse(localStorage.getItem("user"));
+    const docId = Date.now().toString();
+
+    let parsedTripData;
+
+    try {
+      parsedTripData = JSON.parse(TripData);
+    } catch (error) {
+      console.error("Error parsing trip data:", error);
+      toast.error("Failed to parse trip data.");
+      setIsLoading(false);
+      return;
+    }
+
+    await setDoc(doc(db, "AITrips", docId), {
+      userSelection: formData,
+      tripData: parsedTripData,
+      userEmail: user?.email,
+      id: docId,
+    });
+    setIsLoading(false);
+    // navigate('/view-trip/' + docId);
   };
 
   const GetUserProfile = async (accessToken) => {
@@ -215,7 +244,11 @@ function CreateTrip() {
           </div>
 
           <div className="mt-10 flex justify-end">
-            <Button disabled={isLoading} onClick={OnGenerateTrip}>
+            <Button
+              className="bg-orange-500 hover:bg-indigo-600 text-white"
+              disabled={isLoading}
+              onClick={OnGenerateTrip}
+            >
               {isLoading ? (
                 <AiOutlineLoading3Quarters className="h-7 w-7 animate-spin" />
               ) : (
@@ -241,9 +274,9 @@ function CreateTrip() {
 
                   <Button
                     onClick={() => login()}
-                    className="bg-blue-500 hover:bg-blue-600 text-white w-full flex items-center justify-center gap-4"
+                    className="bg-black hover:bg-blue-600 text-white w-full mt-5 flex items-center justify-center gap-4"
                   >
-                    <FcGoogle className="h-6 w-6" />
+                    <FcGoogle className="h-7 w-7" />
                     Sign in with Google
                   </Button>
                 </DialogDescription>
