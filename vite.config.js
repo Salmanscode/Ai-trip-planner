@@ -11,7 +11,7 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: ["react-router-dom", "@google/generative-ai"],
+      external: ["@google/generative-ai"], // Only externalize @google/generative-ai
     },
   },
 });
