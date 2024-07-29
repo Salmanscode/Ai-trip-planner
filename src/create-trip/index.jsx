@@ -143,24 +143,24 @@ function CreateTrip() {
   };
 
   return (
-    <div className="relative min-h-screen bg-gray-100 p-5 md:p-10 lg:p-20">
+    <div className="relative min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8 lg:p-10 xl:p-16">
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: 'url("/bgform.jpg")' }}
       ></div>
       <div className="relative flex flex-col items-center justify-center min-h-screen">
-        <div className="w-full max-w-4xl bg-white p-8 rounded-lg shadow-lg">
-          <h2 className="text-3xl font-bold mb-4 text-center text-gray-800">
+        <div className="w-full max-w-2xl lg:max-w-4xl bg-white p-6 sm:p-8 md:p-10 lg:p-12 rounded-lg shadow-lg">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-center text-gray-800">
             Tell us your travel preferences 🏕️🌴
           </h2>
-          <p className="text-xl text-gray-600 mb-8 text-center">
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-600 mb-8 text-center">
             Just provide some basic information, and our trip planner will
             generate a customized itinerary based on your preferences.
           </p>
 
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             <div>
-              <h2 className="text-2xl font-semibold mb-4 text-gray-700">
+              <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-gray-700">
                 What is your destination of choice?
               </h2>
               <OpenCageAutocomplete
@@ -177,7 +177,7 @@ function CreateTrip() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-semibold mb-4 text-gray-700">
+              <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-gray-700">
                 How many days are you planning your trip?
               </h2>
               <input
@@ -191,26 +191,30 @@ function CreateTrip() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-semibold mb-4 text-gray-700">
+              <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-gray-700">
                 What is Your Budget?
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
                 {SelectBudgetOptions.map((item, index) => (
                   <div
                     key={index}
                     onClick={() => handleInputChange("budget", item.title)}
-                    className={`p-5 border cursor-pointer rounded-lg transition-shadow duration-300 ease-in-out
+                    className={`p-4 sm:p-5 border cursor-pointer rounded-lg transition-shadow duration-300 ease-in-out
                                 ${
                                   formData.budget === item.title
                                     ? "border-2 border-indigo-500 shadow-lg"
                                     : "border-gray-300"
                                 }`}
                   >
-                    <h2 className="text-3xl mb-2 text-gray-800">{item.icon}</h2>
-                    <h2 className="font-bold text-xl mb-1 text-gray-800">
+                    <h2 className="text-2xl sm:text-3xl mb-2 text-gray-800">
+                      {item.icon}
+                    </h2>
+                    <h2 className="font-bold text-lg sm:text-xl mb-1 text-gray-800">
                       {item.title}
                     </h2>
-                    <p className="text-sm text-gray-600">{item.desc}</p>{" "}
+                    <p className="text-xs sm:text-sm text-gray-600">
+                      {item.desc}
+                    </p>{" "}
                     {/* Changed from <h2> to <p> */}
                   </div>
                 ))}
@@ -218,26 +222,30 @@ function CreateTrip() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-semibold mb-4 text-gray-700">
+              <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-gray-700">
                 Who do you plan on traveling with on your next adventure?
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
                 {SelectTravelsList.map((item, index) => (
                   <div
                     key={index}
                     onClick={() => handleInputChange("traveler", item.people)}
-                    className={`p-5 border cursor-pointer rounded-lg transition-shadow duration-300 ease-in-out
+                    className={`p-4 sm:p-5 border cursor-pointer rounded-lg transition-shadow duration-300 ease-in-out
                                 ${
                                   formData.traveler === item.people
                                     ? "border-2 border-indigo-500 shadow-lg"
                                     : "border-gray-300"
                                 }`}
                   >
-                    <h2 className="text-3xl mb-2 text-gray-800">{item.icon}</h2>
-                    <h2 className="font-bold text-xl mb-1 text-gray-800">
+                    <h2 className="text-2xl sm:text-3xl mb-2 text-gray-800">
+                      {item.icon}
+                    </h2>
+                    <h2 className="font-bold text-lg sm:text-xl mb-1 text-gray-800">
                       {item.title}
                     </h2>
-                    <p className="text-sm text-gray-600">{item.desc}</p>{" "}
+                    <p className="text-xs sm:text-sm text-gray-600">
+                      {item.desc}
+                    </p>{" "}
                     {/* Changed from <h2> to <p> */}
                   </div>
                 ))}
@@ -245,14 +253,14 @@ function CreateTrip() {
             </div>
           </div>
 
-          <div className="mt-10 flex justify-end">
+          <div className="mt-8 sm:mt-10 flex justify-end">
             <Button
-              className="bg-orange-500 hover:bg-indigo-600 text-white"
+              className="bg-orange-500 hover:bg-orange-600 text-white"
               disabled={isLoading}
               onClick={OnGenerateTrip}
             >
               {isLoading ? (
-                <AiOutlineLoading3Quarters className="h-7 w-7 animate-spin" />
+                <AiOutlineLoading3Quarters className="h-6 w-6 sm:h-7 sm:w-7 animate-spin" />
               ) : (
                 "Generate Trip"
               )}
@@ -261,12 +269,12 @@ function CreateTrip() {
           <Dialog open={openDialog} onOpenChange={setOpenDialog}>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle className="text-xl font-bold">
+                <DialogTitle className="text-lg sm:text-xl font-bold">
                   Authentication Required
                 </DialogTitle>
                 <DialogDescription>
                   <div>
-                    <h2 className="font-bold text-lg mb-3">
+                    <h2 className="font-bold text-lg sm:text-xl mb-3">
                       Sign In With Google
                     </h2>
                     <p className="mb-3">
@@ -276,9 +284,9 @@ function CreateTrip() {
 
                   <Button
                     onClick={() => login()}
-                    className="bg-black hover:bg-blue-600 text-white w-full mt-5 flex items-center justify-center gap-4"
+                    className="bg-black hover:bg-blue-600 text-white w-full mt-4 flex items-center justify-center gap-3 sm:gap-4"
                   >
-                    <FcGoogle className="h-7 w-7" />
+                    <FcGoogle className="h-6 w-6 sm:h-7 sm:w-7" />
                     Sign in with Google
                   </Button>
                 </DialogDescription>
