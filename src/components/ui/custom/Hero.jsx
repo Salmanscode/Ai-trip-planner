@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 function Hero() {
   return (
-    <div className="relative w-full h-screen bg-[url('/public/newbg.png')] bg-cover bg-center flex flex-col items-center justify-center text-white">
+    <div className="relative w-full h-screen bg-[url('/newbg.png')] bg-cover bg-center flex flex-col items-center justify-center text-white">
       <div className="absolute inset-0 bg-black opacity-40"></div>{" "}
       {/* Optional overlay */}
       <div className="relative z-10 flex flex-col items-center gap-9 px-6">
