@@ -1,8 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { GetPlaceDetails, PHOTO_REF_URL } from "@/service/GlobalApi";
 
 function HotelCardItem({ item }) {
   console.log("Salman", item); // Debugging line
+
+  const [photoUrl, setPhotoUrl] = useState();
+
+  useEffect(() => {
+    item && GetPlaceImg();
+  }, [item]);
+
+  const GetPlaceImg = async () => {
+    const data = {
+      textQuery: item?.name,
+    };
+    const result = await GetPlaceDetails(data).then((resp) => {
+      // console.log(resp.data.places[0].photos[3].name)
+      const PhotoUrl = PHOTO_REF_URL.replace(
+        "{NAME}",
+        resp.data.places[0].photos[3].name
+      );
+      setPhotoUrl(PhotoUrl);
+    });
+  };
 
   return (
     <div>
@@ -17,7 +38,7 @@ function HotelCardItem({ item }) {
       >
         <div className="hover:scale-105 transition-all cursor-pointer">
           <img
-            src="/placeholder.jpg" // Ensure this path is correct
+            src={photoUrl ? photoUrl : "/placeholder.jpg"}
             className="rounded-xl h-[180px] w-full object-cover"
             alt={item?.name}
           />
