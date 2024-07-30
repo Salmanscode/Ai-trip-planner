@@ -21,6 +21,7 @@ import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/service/firebaseConfig";
+import { useNavigate } from "react-router-dom";
 
 const getAIPrompt = (formData) => `
   Generate Travel plan for Location: ${formData.location},
@@ -42,6 +43,7 @@ function CreateTrip() {
   const [openDialog, setOpenDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const navigate = useNavigate();
   const handleInputChange = (name, value) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -117,7 +119,7 @@ function CreateTrip() {
       id: docId,
     });
     setIsLoading(false);
-    // navigate('/view-trip/' + docId);
+    navigate("/view-trip/" + docId);
   };
 
   const GetUserProfile = async (accessToken) => {
